@@ -1,0 +1,303 @@
+/*
+ * SPDX-FileCopyrightText: 2026 BlackShield LDA
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+.markdown {
+  max-width: 880px;
+  padding: 40px 48px 96px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-wrap: break-word;
+}
+
+.markdown > :first-child {
+  margin-top: 0;
+}
+
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+
+/* Headings */
+
+.markdown :is(h1, h2, h3, h4, h5, h6) {
+  margin: 1.8em 0 0.65em;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  scroll-margin-top: 16px;
+}
+
+.markdown h1 {
+  padding-bottom: 0.3em;
+  font-size: 2em;
+  letter-spacing: -0.022em;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.markdown h2 {
+  padding-bottom: 0.3em;
+  font-size: 1.5em;
+  letter-spacing: -0.018em;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.markdown h3 {
+  font-size: 1.25em;
+}
+
+.markdown h4 {
+  font-size: 1em;
+}
+
+.markdown h5 {
+  font-size: 0.875em;
+}
+
+.markdown h6 {
+  font-size: 0.85em;
+  color: var(--fg-muted);
+}
+
+/* Blocks */
+
+.markdown :is(p, ul, ol, dl, table, pre, blockquote, details, .katex-block, .markdown-alert, .mermaid-diagram) {
+  margin: 0 0 1em;
+}
+
+.markdown a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.markdown a:hover {
+  text-decoration: underline;
+}
+
+.markdown strong {
+  font-weight: 650;
+}
+
+.markdown img {
+  max-width: 100%;
+}
+
+.markdown hr {
+  height: 1px;
+  margin: 2em 0;
+  background: var(--border);
+  border: 0;
+}
+
+.markdown blockquote {
+  padding: 0 1em;
+  color: var(--fg-muted);
+  border-left: 0.25em solid var(--border);
+}
+
+.markdown :is(blockquote, .markdown-alert, li, td, th, dd) > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown summary {
+  cursor: pointer;
+}
+
+/* Lists */
+
+.markdown :is(ul, ol) {
+  padding-left: 1.75em;
+}
+
+.markdown li + li {
+  margin-top: 0.25em;
+}
+
+.markdown li > :is(ul, ol) {
+  margin: 0.25em 0 0;
+}
+
+.markdown li > p {
+  margin-bottom: 0.5em;
+}
+
+.markdown .task-list-container {
+  padding-left: 0.5em;
+  list-style: none;
+}
+
+.markdown .task-list-item-checkbox {
+  margin: 0 0.5em 0.15em 0;
+  vertical-align: middle;
+}
+
+.markdown dt {
+  font-weight: 650;
+}
+
+.markdown dd {
+  margin: 0 0 0.75em 1.5em;
+}
+
+/* Code */
+
+.markdown :is(code, kbd, samp, pre) {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  font-variant-ligatures: none;
+}
+
+.markdown :not(pre) > code {
+  padding: 0.2em 0.4em;
+  background: var(--inline-code-bg);
+  border-radius: 6px;
+}
+
+.markdown pre {
+  padding: 14px 16px;
+  overflow: auto;
+  line-height: 1.55;
+  tab-size: 4;
+  background: var(--code-bg);
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+}
+
+.markdown pre code {
+  font-size: 1em;
+}
+
+.markdown :is(.shiki, .shiki span) {
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  color: var(--shiki-light);
+}
+
+.markdown pre.mermaid-error {
+  border-color: var(--caution);
+}
+
+.markdown kbd {
+  padding: 0.15em 0.4em;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+}
+
+/* Tables */
+
+.markdown table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  font-variant-numeric: tabular-nums;
+  border-collapse: collapse;
+}
+
+.markdown :is(th, td) {
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+}
+
+.markdown th {
+  font-weight: 650;
+  background: var(--bg-subtle);
+}
+
+.markdown tr:nth-child(2n) td {
+  background: var(--bg-subtle);
+}
+
+/* Alerts */
+
+.markdown .markdown-alert {
+  padding: 0.5em 1em;
+  border-left: 0.25em solid var(--alert);
+}
+
+.markdown .markdown-alert-title {
+  margin-bottom: 0.25em;
+  font-weight: 650;
+  color: var(--alert);
+  text-transform: lowercase;
+}
+
+.markdown .markdown-alert-title::first-letter {
+  text-transform: uppercase;
+}
+
+.markdown .markdown-alert-note {
+  --alert: var(--note);
+}
+
+.markdown .markdown-alert-tip {
+  --alert: var(--tip);
+}
+
+.markdown .markdown-alert-important {
+  --alert: var(--important);
+}
+
+.markdown .markdown-alert-warning {
+  --alert: var(--warning);
+}
+
+.markdown .markdown-alert-caution {
+  --alert: var(--caution);
+}
+
+/* Footnotes */
+
+.markdown .footnotes {
+  font-size: 0.875em;
+  color: var(--fg-muted);
+}
+
+.markdown .footnote-ref {
+  line-height: 1;
+}
+
+/* Math and diagrams */
+
+.markdown .katex {
+  font-size: 1.1em;
+}
+
+.markdown .katex-display {
+  padding: 2px 0;
+  margin: 0;
+  overflow: auto hidden;
+}
+
+.markdown .mermaid-diagram {
+  text-align: center;
+}
+
+.markdown .mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown .mermaid-dark {
+  display: none;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  .markdown :is(.shiki, .shiki span) {
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    color: var(--shiki-dark);
+  }
+
+  .markdown .mermaid-default {
+    display: none;
+  }
+
+  .markdown .mermaid-dark {
+    display: block;
+  }
+}

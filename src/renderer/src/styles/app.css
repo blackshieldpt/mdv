@@ -1,0 +1,654 @@
+/*
+ * SPDX-FileCopyrightText: 2026 BlackShield LDA
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+:root {
+  color-scheme: light dark;
+  --font-ui: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Noto Color Emoji';
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --bg: #ffffff;
+  --bg-subtle: #f6f8fa;
+  --bg-hover: #e9edf1;
+  --bg-selected: #dde7f5;
+  --fg: #1f2328;
+  --fg-muted: #59636e;
+  --border: #d1d9e0;
+  --border-muted: #e3e8ed;
+  --accent: #0969da;
+  --code-bg: #f6f8fa;
+  --inline-code-bg: #eef0f3;
+  --note: #0969da;
+  --tip: #1a7f37;
+  --important: #8250df;
+  --warning: #9a6700;
+  --caution: #cf222e;
+}
+
+/* `screen` keeps printed output light whatever the app theme is. */
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --bg-subtle: #151b23;
+    --bg-hover: #212830;
+    --bg-selected: #1c2c44;
+    --fg: #e6edf3;
+    --fg-muted: #9198a1;
+    --border: #3d444d;
+    --border-muted: #2a313a;
+    --accent: #4493f8;
+    --code-bg: #151b23;
+    --inline-code-bg: #262c36;
+    --note: #4493f8;
+    --tip: #3fb950;
+    --important: #ab7df8;
+    --warning: #d29922;
+    --caution: #f85149;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font: 13px/1.4 var(--font-ui);
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  display: flex;
+  height: 100%;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.doc {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.doc-scroller {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Keeps a document's own positioned content inside the document, off the application's panes. */
+.doc-scroller > .markdown {
+  contain: paint;
+}
+
+/* Side panes */
+
+.pane {
+  position: relative;
+  display: flex;
+  flex: none;
+  background: var(--bg-subtle);
+  user-select: none;
+}
+
+.pane.left {
+  border-right: 1px solid var(--border);
+}
+
+.pane.right {
+  border-left: 1px solid var(--border);
+}
+
+.pane.collapsed {
+  width: 28px;
+}
+
+/* At the window's edge, where it stays when the pane collapses. */
+.pane-toggle {
+  position: absolute;
+  top: 8px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--fg-muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+}
+
+.pane.left .pane-toggle {
+  left: 2px;
+}
+
+.pane.right .pane-toggle {
+  right: 2px;
+}
+
+.pane-toggle:hover {
+  color: var(--fg);
+  background: var(--bg-hover);
+}
+
+/* Straddles the pane's edge, above the document beside it. */
+.pane-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 5px;
+  cursor: col-resize;
+}
+
+.pane.left .pane-resizer {
+  right: -3px;
+}
+
+.pane.right .pane-resizer {
+  left: -3px;
+}
+
+.pane-resizer:hover,
+.pane-resizer:active {
+  background: var(--accent);
+}
+
+.tree,
+.toc {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+  overflow: auto;
+}
+
+.pane.left .pane-title {
+  padding-left: 24px;
+}
+
+.pane.right .pane-title {
+  padding-right: 24px;
+}
+
+.pane-title {
+  padding: 6px 10px 8px;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--fg-muted);
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tree ul,
+.toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tree ul ul {
+  padding-left: 14px;
+}
+
+.tree button,
+.toc button {
+  display: block;
+  width: 100%;
+  padding: 4px 10px;
+  overflow: hidden;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+}
+
+.tree button:hover,
+.toc button:hover {
+  background: var(--bg-hover);
+}
+
+.tree .dir::before {
+  display: inline-block;
+  width: 14px;
+  color: var(--fg-muted);
+  content: '▸';
+}
+
+.tree .dir[aria-expanded='true']::before {
+  content: '▾';
+}
+
+.tree .file {
+  padding-left: 24px;
+}
+
+.tree .file.active {
+  font-weight: 600;
+  background: var(--bg-selected);
+}
+
+.toc button {
+  color: var(--fg-muted);
+  border-radius: 0 6px 6px 0;
+}
+
+.toc button.active {
+  font-weight: 500;
+  color: var(--accent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* Tabs */
+
+.tabbar {
+  display: flex;
+  flex: none;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+}
+
+.tabs {
+  display: flex;
+  flex: 1;
+  overflow-x: auto;
+  border-left: 1px solid var(--border);
+  scrollbar-width: none;
+}
+
+.history {
+  width: 28px;
+  padding: 0;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--fg-muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.history:hover:enabled {
+  color: var(--fg);
+  background: var(--bg-hover);
+}
+
+.history:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.tab {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  max-width: 240px;
+  padding: 7px 8px 7px 14px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+}
+
+.tab:hover {
+  background: var(--bg-hover);
+}
+
+.tab.active {
+  color: var(--fg);
+  background: var(--bg);
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+
+.tab span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab button {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  font: inherit;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  opacity: 0;
+}
+
+.tab:hover button,
+.tab.active button {
+  opacity: 0.7;
+}
+
+.tab button:hover {
+  background: var(--border);
+  opacity: 1;
+}
+
+/* Empty state */
+
+.welcome {
+  margin: auto;
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+.welcome h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+  font-weight: 650;
+  color: var(--fg);
+  letter-spacing: -0.02em;
+}
+
+.welcome button {
+  padding: 6px 14px;
+  margin: 8px 4px 0;
+  font: inherit;
+  font-weight: 500;
+  color: var(--fg);
+  cursor: pointer;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.welcome button:hover {
+  background: var(--bg-hover);
+}
+
+/* About dialog */
+
+.about {
+  width: min(760px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 30%);
+}
+
+.about::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+.about-body {
+  padding: 24px 28px 28px;
+}
+
+.about h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.about h2 {
+  margin: 24px 0 8px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.about p {
+  margin: 0 0 12px;
+}
+
+.about-version {
+  color: var(--fg-muted);
+}
+
+.about-close {
+  float: right;
+  width: 26px;
+  height: 26px;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--fg-muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+}
+
+.about-close:hover {
+  background: var(--bg-hover);
+}
+
+.about dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 16px;
+  margin: 0 0 12px;
+}
+
+.about dt {
+  color: var(--fg-muted);
+}
+
+.about dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.about ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+}
+
+.about li + li {
+  border-top: 1px solid var(--border-muted);
+}
+
+.about summary {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.about li summary {
+  display: grid;
+  grid-template-columns: 1fr 90px 150px;
+  gap: 12px;
+}
+
+.about li summary:hover {
+  background: var(--bg-subtle);
+}
+
+.about-name {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+}
+
+.about li summary span:not(.about-name) {
+  color: var(--fg-muted);
+}
+
+.about pre {
+  max-height: 320px;
+  padding: 12px;
+  margin: 6px 10px 10px;
+  overflow: auto;
+  font: 11.5px/1.5 var(--font-mono);
+  white-space: pre-wrap;
+  background: var(--code-bg);
+  border-radius: 6px;
+}
+
+.about-link {
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.about-link:hover {
+  text-decoration: underline;
+}
+
+.about li .about-link {
+  margin: 4px 10px 0;
+}
+
+/* Print options dialog */
+
+.print-dialog {
+  width: 320px;
+  padding: 20px 24px;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 30%);
+}
+
+.print-dialog::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+.print-dialog h1 {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.print-dialog label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.print-dialog input {
+  margin: 0;
+}
+
+.print-dialog footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.print-dialog button {
+  padding: 6px 14px;
+  font: inherit;
+  font-weight: 500;
+  color: var(--fg);
+  cursor: pointer;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.print-dialog button.primary {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Find bar */
+
+.find {
+  position: absolute;
+  top: 8px;
+  right: 24px;
+  z-index: 1;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 18%);
+}
+
+.find input {
+  width: 200px;
+  padding: 4px 8px;
+  font: inherit;
+  color: var(--fg);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+}
+
+.find input:focus {
+  border-color: var(--accent);
+}
+
+.find-count {
+  min-width: 64px;
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+.find button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font: inherit;
+  color: var(--fg-muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+}
+
+.find button:hover:enabled {
+  color: var(--fg);
+  background: var(--bg-hover);
+}
+
+.find button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+::highlight(find) {
+  color: #1f2328;
+  background: #fff1a8;
+}
+
+::highlight(find-current) {
+  color: #1f2328;
+  background: #ffa24c;
+}

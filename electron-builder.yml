@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2026 BlackShield LDA
+# SPDX-License-Identifier: Apache-2.0
+
+appId: pt.blackshield.mdv
+productName: mdv
+directories:
+  output: dist
+files:
+  - out/**/*
+extraFiles:
+  - from: LICENSE
+    to: LICENSE.mdv.txt
+  - from: out/renderer/THIRD-PARTY-NOTICES.txt
+    to: THIRD-PARTY-NOTICES.txt
+fileAssociations:
+  - ext: [md, markdown, mdown, mkd]
+    name: Markdown
+    role: Viewer
+    mimeType: text/markdown
+linux:
+  target: [deb, snap]
+  category: Office
+  syncDesktopName: true
+  icon: build/icons
+# Built by snapcraft in an LXD container.
+snapcraft:
+  base: core24
+  core24:
+    summary: Markdown viewer
+    useLXD: true
+    plugs:
+      # Documents are read from the home folder; images may come from the web.
+      - home
+      - network
+      # Lets Chromium's own sandbox run inside the snap's confinement.
+      - browser-support:
+          interface: browser-support
+          allow-sandbox: true
+win:
+  target: nsis
+mac:
+  target: dmg
+  # electron-builder leaves this file out of macOS bundles.
+  extraResources:
+    - from: node_modules/electron/dist/LICENSES.chromium.html
+      to: LICENSES.chromium.html
+  category: public.app-category.productivity

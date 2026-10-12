@@ -1,0 +1,70 @@
+{
+  "name": "mdv",
+  "version": "0.1.0",
+  "description": "Markdown viewer",
+  "main": "./out/main/index.js",
+  "desktopName": "mdv.desktop",
+  "author": {
+    "name": "BlackShield LDA",
+    "email": "jpinheiro@blackshield.pt"
+  },
+  "homepage": "https://blackshield.pt",
+  "license": "Apache-2.0",
+  "private": true,
+  "engines": {
+    "node": "^22.22.2 || >=24.15.0"
+  },
+  "scripts": {
+    "dev": "electron-vite dev --",
+    "build": "electron-vite build",
+    "start": "electron-vite preview --",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run",
+    "test:e2e": "electron-vite build && playwright test",
+    "dist": "electron-vite build && electron-builder",
+    "dist:linux": "electron-vite build && electron-builder --linux",
+    "dist:win": "electron-vite build && electron-builder --win",
+    "dist:mac": "electron-vite build && electron-builder --mac"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@mdit/plugin-alert": "^2.0.2",
+    "@mdit/plugin-footnote": "^1.1.2",
+    "@mdit/plugin-katex": "^1.1.3",
+    "@mdit/plugin-tasklist": "^1.1.3",
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "dompurify": "^3.4.17",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "github-slugger": "^2.0.0",
+    "jsdom": "^30.1.2",
+    "katex": "^0.18.9",
+    "markdown-it": "^15.0.2",
+    "markdown-it-anchor": "^10.0.0",
+    "markdown-it-deflist": "^4.0.0",
+    "markdown-it-emoji": "^3.1.0",
+    "markdown-it-front-matter": "^0.2.4",
+    "mermaid": "^12.1.0",
+    "pdfjs-dist": "^6.4.299",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "shiki": "^4.5.0",
+    "typescript": "^7.0.2",
+    "vite": "^7.3.7",
+    "vitest": "^5.0.4"
+  },
+  "overrides": {
+    "mermaid": {
+      "katex": "$katex"
+    }
+  }
+}
