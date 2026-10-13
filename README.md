@@ -2,6 +2,10 @@
 
 A desktop Markdown viewer built on Electron.
 
+![mdv in the light theme, with the file tree, a document and its table of contents](docs/screenshot.png)
+
+![mdv in the dark theme](docs/screenshot_dark.png)
+
 - File tree of the Markdown files in a folder, updated as files change
 - Multiple documents in tabs
 - Automatic table of contents that follows the scroll position
