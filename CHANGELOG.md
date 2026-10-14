@@ -21,6 +21,8 @@ First version, to be released as 0.1.0.
 - Links between documents, including links to a heading in another file.
 - Back and forward through the documents shown.
 - Find in the open document, with match count and next/previous.
+- Edit menu with Copy, Select All and Find; the find bar also takes the usual undo, redo,
+  cut and paste shortcuts.
 - Single instance: opening a file while mdv is running adds a tab to its window.
 - Live reload when an open document changes on disk.
 - Light and dark themes, following the system or chosen in the View menu.

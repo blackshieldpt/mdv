@@ -210,12 +210,13 @@ function buildMenu(): void {
     {
       label: 'Edit',
       submenu: [
-        { role: 'undo' },
-        { role: 'redo' },
-        { type: 'separator' },
-        { role: 'cut' },
+        // Hidden rather than removed: on macOS, text fields such as the find bar only get
+        // the undo, redo, cut and paste shortcuts from Edit menu role items.
+        { role: 'undo', visible: false },
+        { role: 'redo', visible: false },
+        { role: 'cut', visible: false },
         { role: 'copy' },
-        { role: 'paste' },
+        { role: 'paste', visible: false },
         { role: 'selectAll' },
         { type: 'separator' },
         { label: 'Find…', accelerator: 'CmdOrCtrl+F', click: send('find') }
