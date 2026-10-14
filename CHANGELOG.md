@@ -4,9 +4,16 @@ All notable changes to mdv are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.1.1] - 2026-10-15
 
-First version, to be released as 0.1.0.
+### Changed
+
+- The Edit menu shows only Copy, Select All and Find. Undo, redo, cut and paste are still
+  available from the keyboard in the find bar.
+
+## [0.1.0] - 2026-10-13
+
+First version.
 
 ### Added
 
@@ -21,8 +28,6 @@ First version, to be released as 0.1.0.
 - Links between documents, including links to a heading in another file.
 - Back and forward through the documents shown.
 - Find in the open document, with match count and next/previous.
-- Edit menu with Copy, Select All and Find; the find bar also takes the usual undo, redo,
-  cut and paste shortcuts.
 - Single instance: opening a file while mdv is running adds a tab to its window.
 - Live reload when an open document changes on disk.
 - Light and dark themes, following the system or chosen in the View menu.

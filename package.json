@@ -1,6 +1,6 @@
 {
   "name": "mdv",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Markdown viewer",
   "main": "./out/main/index.js",
   "desktopName": "mdv.desktop",
