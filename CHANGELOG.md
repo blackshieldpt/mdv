@@ -4,6 +4,13 @@ All notable changes to mdv are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Right-clicking selected text in the document opens a menu with Copy and Copy as Plain Text;
+  the second copies the text without its formatting.
+
 ## [0.1.1] - 2026-10-15
 
 ### Changed

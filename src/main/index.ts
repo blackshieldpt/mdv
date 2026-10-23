@@ -4,6 +4,7 @@
 import {
   app,
   BrowserWindow,
+  clipboard,
   dialog,
   ipcMain,
   Menu,
@@ -333,6 +334,12 @@ function registerIpc(): void {
 
   handle('open-chromium-licenses', () => shell.openPath(chromiumLicenses()))
   handle('print', (_event, request: PrintRequest) => print(request))
+  handle('copy-menu', (_event, text: string) =>
+    Menu.buildFromTemplate([
+      { role: 'copy' },
+      { label: 'Copy as Plain Text', click: () => clipboard.writeText(text) }
+    ]).popup({ window: win! })
+  )
 
   // Called by a print window, about its own job.
   ipcMain.handle('print-job', (event) => printJobs.get(event.sender.id)!.job)

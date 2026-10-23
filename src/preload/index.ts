@@ -23,6 +23,7 @@ const api: MdvApi = {
   watchFiles: (files) => ipcRenderer.invoke('watch-files', files),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
   print: (request) => ipcRenderer.invoke('print', request),
+  copyMenu: (text) => ipcRenderer.invoke('copy-menu', text),
   printJob: () => ipcRenderer.invoke('print-job'),
   printDone: (error) => ipcRenderer.invoke('print-done', error),
   printPages: () => ipcRenderer.invoke('print-pages'),
