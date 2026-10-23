@@ -123,6 +123,9 @@ name in the page header.
 
 The View menu switches between the light and dark themes (the system's by default) and zooms.
 
+Right-clicking selected text in the document offers Copy and Copy as Plain Text; the second copies
+the text without its formatting.
+
 The file tree and the table of contents are resized by dragging their inner edge, and collapsed or
 expanded with the button at their top corner. Their widths are remembered.
 

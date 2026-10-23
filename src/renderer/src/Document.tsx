@@ -98,6 +98,11 @@ export function Document({ file, doc, anchor, find, onFindClose, onHeading, onLi
     else onLink(href, event.button === 1 || event.ctrlKey || event.metaKey)
   }
 
+  const onContextMenu = (): void => {
+    const text = getSelection()!.toString()
+    if (text) window.mdv.copyMenu(text)
+  }
+
   return (
     <div className="doc">
       {find > 0 && <FindBar focus={find} version={version} content={content} scroller={scroller} onClose={onFindClose} />}
@@ -109,7 +114,7 @@ export function Document({ file, doc, anchor, find, onFindClose, onHeading, onLi
           spy()
         }}
       >
-        <article className="markdown" ref={content} onClick={onClick} onAuxClick={onClick} />
+        <article className="markdown" ref={content} onClick={onClick} onAuxClick={onClick} onContextMenu={onContextMenu} />
       </div>
     </div>
   )

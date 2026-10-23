@@ -90,6 +90,8 @@ export interface MdvApi {
   watchFiles(files: string[]): Promise<void>
   openExternal(url: string): Promise<void>
   print(request: PrintRequest): Promise<void>
+  /** Shows the context menu for text selected in the document, `text` being the selection. */
+  copyMenu(text: string): Promise<void>
   /** For the print window: the job to lay out, and the report that it is ready (or failed). */
   printJob(): Promise<PrintJob>
   printDone(error?: string): Promise<void>
