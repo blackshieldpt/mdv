@@ -11,7 +11,7 @@ import { footnote } from '@mdit/plugin-footnote'
 import { katex } from '@mdit/plugin-katex'
 import { tasklist } from '@mdit/plugin-tasklist'
 import { slug } from 'github-slugger'
-import { bundledLanguages, createHighlighter, type BundledLanguage } from 'shiki'
+import { bundledLanguages, createHighlighter, type BundledLanguage, type LanguageRegistration } from 'shiki'
 import DOMPurify from 'dompurify'
 import { ID_PREFIX, type TocEntry } from '../../shared/types'
 
@@ -25,8 +25,23 @@ const HEADING_TEXT = ['text', 'code_inline', 'emoji', 'math_inline']
 
 const fenceLang = (info: string): string => info.trim().split(/\s+/)[0].toLowerCase()
 
+/** Names for x86 assembly that Shiki's bundled grammar does not answer to. */
+const LANG_ALIAS: Record<string, string> = { nasm: 'asm', x86asm: 'asm', masm: 'asm', gas: 'asm', s: 'asm' }
+
+/** Grammars Shiki does not bundle, copied into ./grammars (see sources.json there) and loaded on first use. */
+const GRAMMARS = [
+  { name: 'arm', aliases: ['armasm'], load: () => import('./grammars/arm.tmLanguage.json') },
+  { name: 'arm64', aliases: ['aarch64'], load: () => import('./grammars/arm64.tmLanguage.json') },
+  { name: 'z80', aliases: [], load: () => import('./grammars/z80.tmLanguage.json') },
+  { name: '6502', aliases: ['65c02'], load: () => import('./grammars/6502.tmLanguage.json') },
+  { name: 'avr', aliases: [], load: () => import('./grammars/avr.tmLanguage.json') }
+]
+const vendored = new Map(
+  GRAMMARS.flatMap((grammar) => [grammar.name, ...grammar.aliases].map((name) => [name, grammar]))
+)
+
 const setup = (async () => {
-  const shiki = await createHighlighter({ themes: Object.values(THEMES), langs: [] })
+  const shiki = await createHighlighter({ themes: Object.values(THEMES), langs: [], langAlias: LANG_ALIAS })
   const md = new MarkdownIt({
     html: true,
     linkify: true,
@@ -61,11 +76,24 @@ export async function renderMarkdown(source: string): Promise<Rendered> {
   const tokens = md.parse(source, {})
 
   const loaded = shiki.getLoadedLanguages()
-  const langs = new Set(tokens.filter((token) => token.type === 'fence').map((token) => fenceLang(token.info)))
+  // An alias counts as loaded as soon as it is declared, so it is resolved before that check. The
+  // info is unescaped as markdown-it does before calling `highlight`, so both see the same name.
+  const langs = new Set(
+    tokens
+      .filter((token) => token.type === 'fence')
+      .map((token) => fenceLang(md.utils.unescapeAll(token.info)))
+      .map((lang) => (Object.hasOwn(LANG_ALIAS, lang) ? LANG_ALIAS[lang] : lang))
+  )
   await Promise.all(
     [...langs]
-      .filter((lang) => Object.hasOwn(bundledLanguages, lang) && !loaded.includes(lang))
-      .map((lang) => shiki.loadLanguage(lang as BundledLanguage))
+      .filter((lang) => !loaded.includes(lang))
+      .map(async (lang) => {
+        if (Object.hasOwn(bundledLanguages, lang)) return shiki.loadLanguage(lang as BundledLanguage)
+        const grammar = vendored.get(lang)
+        if (!grammar) return
+        const rules = (await grammar.load()).default as unknown as LanguageRegistration
+        await shiki.loadLanguage({ ...rules, name: grammar.name, aliases: grammar.aliases })
+      })
   )
 
   const toc = tokens.flatMap((token, i) =>

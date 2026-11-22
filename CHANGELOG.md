@@ -4,6 +4,14 @@ All notable changes to mdv are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Code blocks in ARM, AArch64, Z80, 6502/65C02 and AVR assembly are highlighted (fence names
+  `arm`, `armasm`, `arm64`, `aarch64`, `z80`, `6502`, `65c02`, `avr`), and `nasm`, `x86asm`,
+  `masm`, `gas` and `s` highlight as x86 assembly.
+
 ## [0.2.0] - 2026-10-23
 
 ### Added

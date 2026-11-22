@@ -10,7 +10,8 @@ A desktop Markdown viewer built on Electron.
 - Multiple documents in tabs
 - Automatic table of contents that follows the scroll position
 - GitHub-flavoured Markdown: tables, task lists, alerts, footnotes, emoji
-- Syntax highlighting (Shiki), math (KaTeX) and diagrams (Mermaid)
+- Syntax highlighting (Shiki), including ARM, AArch64, Z80, 6502 and AVR assembly; math (KaTeX)
+  and diagrams (Mermaid)
 - Light and dark themes
 - Live reload when a document changes on disk
 - Print and PDF export
@@ -209,6 +210,7 @@ directly:
 | markdown-it-anchor                                   | Heading anchors     | Unlicense             |
 | github-slugger                                       | Heading identifiers | ISC                   |
 | Shiki                                                | Syntax highlighting | MIT                   |
+| ARM, AArch64, Z80, 6502 and AVR grammars             | Assembly syntax     | MIT                   |
 | KaTeX                                                | Math                | MIT                   |
 | Mermaid                                              | Diagrams            | MIT                   |
 | DOMPurify                                            | HTML sanitizing     | MPL-2.0 or Apache-2.0 |
@@ -217,9 +219,13 @@ directly:
 
 These bring in further packages. Version 0.1.0 ships 118 components in all: 68 under MIT, 33 under
 ISC, 6 under BSD licenses, 5 under Apache-2.0, 2 under OFL-1.1, 2 under the Unlicense, and one each
-under MPL-2.0 or Apache-2.0 (DOMPurify) and EPL-2.0 (elkjs, a layout engine Mermaid uses). All are
-used unmodified. The syntax grammars and color themes inside Shiki come from many projects, each
-under its own license, listed at <https://github.com/shikijs/textmate-grammars-themes>.
+under MPL-2.0 or Apache-2.0 (DOMPurify) and EPL-2.0 (elkjs, a layout engine Mermaid uses). These
+packages are used unmodified. The syntax grammars and color themes inside Shiki come from many
+projects, each under its own license, listed at
+<https://github.com/shikijs/textmate-grammars-themes>. The assembly grammars in
+`src/renderer/src/grammars` are copied from their projects at the commits listed in `sources.json`
+there; the 6502 grammar has a small change to how comments are scoped, recorded in
+`THIRD-PARTY-NOTICES.txt`.
 
 Electron itself bundles Chromium, Node.js and other software under their own licenses.
 
