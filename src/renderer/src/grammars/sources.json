@@ -1,0 +1,43 @@
+[
+  {
+    "name": "vscode-arm",
+    "version": "c5a4531",
+    "license": "MIT",
+    "url": "https://github.com/dan-c-underwood/vscode-arm",
+    "grammar": "arm.tmLanguage.json",
+    "licenseFile": "arm.LICENSE"
+  },
+  {
+    "name": "vscode-arm64-assembly",
+    "version": "7b2e658",
+    "license": "MIT",
+    "url": "https://github.com/Felipenguim/vscode-arm64-assembly",
+    "grammar": "arm64.tmLanguage.json",
+    "licenseFile": "arm64.LICENSE"
+  },
+  {
+    "name": "z80-macroasm-vscode",
+    "version": "0e1eb16",
+    "license": "MIT",
+    "url": "https://github.com/mborik/z80-macroasm-vscode",
+    "grammar": "z80.tmLanguage.json",
+    "licenseFile": "z80.LICENSE"
+  },
+  {
+    "name": "AtariCode800",
+    "version": "c1fe622",
+    "license": "MIT",
+    "url": "https://github.com/thinkyhead/AtariCode800",
+    "grammar": "6502.tmLanguage.json",
+    "licenseFile": "6502.LICENSE",
+    "modified": "mdv gives the semicolon comment rules the scope comment.line.semicolon.asm, lets operands end at a comment, and rewrites the two macro-call patterns in unknown-fallback so they cannot backtrack exponentially."
+  },
+  {
+    "name": "avr-asm-intellisense",
+    "version": "a6e2447",
+    "license": "MIT",
+    "url": "https://github.com/jacksonriding/avr-asm-intellisense",
+    "grammar": "avr.tmLanguage.json",
+    "licenseFile": "avr.LICENSE"
+  }
+]

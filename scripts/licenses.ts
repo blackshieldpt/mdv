@@ -38,6 +38,22 @@ function describe(dir: string): Component {
   }
 }
 
+const GRAMMARS = 'src/renderer/src/grammars'
+
+/** Syntax grammars copied into the source tree rather than installed as packages. */
+function grammars(): Component[] {
+  const sources: (Omit<Component, 'text'> & { licenseFile: string; modified?: string })[] = JSON.parse(
+    readFileSync(join(GRAMMARS, 'sources.json'), 'utf8')
+  )
+  return sources.map(({ name, version, license, url, licenseFile, modified }) => ({
+    name,
+    version,
+    license,
+    url,
+    text: [...(modified ? [modified] : []), readFileSync(join(GRAMMARS, licenseFile), 'utf8').trim()].join('\n\n')
+  }))
+}
+
 function notices(components: Component[]): string {
   const entries = components.map((component) =>
     [
@@ -67,7 +83,7 @@ function notices(components: Component[]): string {
 /**
  * Emits `licenses.json` (read by the About dialog) and `THIRD-PARTY-NOTICES.txt` (shipped with the
  * packages), covering every package bundled into the renderer, the production dependencies of the
- * main process, and Electron itself.
+ * main process, Electron itself, and the syntax grammars under src/renderer/src/grammars.
  */
 export function licenses(): Plugin {
   return {
@@ -89,6 +105,7 @@ export function licenses(): Plugin {
         const component = describe(dir)
         byId.set(`${component.name}@${component.version}`, component)
       }
+      for (const component of grammars()) byId.set(`${component.name}@${component.version}`, component)
       const components = [...byId.values()].sort((a, b) => a.name.localeCompare(b.name))
 
       const license = readFileSync('LICENSE', 'utf8')
