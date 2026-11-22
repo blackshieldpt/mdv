@@ -95,10 +95,31 @@ mdv ~/docs                   # opens the folder and its README, if any
 ```
 
 If mdv is already running, these open in its window instead of starting a second one. Files and
-folders can also be dropped on the window. Files ending in `.md`, `.markdown`, `.mdown` or `.mkd`
-are listed in the file tree; picking one opens it in a new tab. A file opened while no folder is
-open brings the folder it is in into the file tree. Links between documents open in the current
+folders can also be dropped on the window. Files ending in `.md`, `.markdown`, `.mdown`, `.mkd` or
+`.mdx` are listed in the file tree; picking one opens it in a new tab. A file opened while no folder
+is open brings the folder it is in into the file tree. Links between documents open in the current
 tab; Ctrl+click or middle-click opens a new one, and middle-click on a tab closes it.
+
+MDX files are shown as Markdown with their top-level `import` and `export` statements hidden. mdv
+does not compile or run MDX, so the rest is rendered as plain Markdown:
+
+- Components and other JSX tags go to the HTML sanitizer as raw HTML. A tag with plain attributes
+  is removed and keeps its content, but a component named like an HTML element (`<Details>`,
+  `<Button>`, `<Image>`) becomes that element, and a self-closing one (`<Details />`) wraps the
+  rest of the document. A tag whose attributes hold expressions with spaces, quotes or spreads
+  (`<Chart data={[1, 2]} />`, `<Card {...props}>`) is shown as source.
+- Markdown on the lines between a component's opening and closing tags is not formatted unless
+  blank lines separate it from the tags; Markdown on the same line as the tags is.
+- `{expressions}` are not evaluated; in text they are shown as typed, apart from any Markdown
+  inside them (`{a*b*c}` gets emphasis).
+- Indented lines are code blocks, as in Markdown; MDX has no indented code.
+- A statement that does not parse as JavaScript is shown as text. This includes TypeScript
+  (`import type`, `: Type` annotations), which MDX does not accept either, and typos. So is a
+  statement spanning more than 50 blank-line-separated blocks, and one followed directly by more
+  than 20 lines that are not statements.
+- On Linux, the system's MIME database may already assign `.mdx` to another format; mdv then has
+  to be chosen by hand to open `.mdx` files from the file manager.
+
 Links to web pages and mail addresses open in the system's browser or mail program; other kinds
 of link do nothing.
 
@@ -209,6 +230,7 @@ directly:
 | @mdit plugins: alert, footnote, katex, tasklist      | Markdown extensions | MIT                   |
 | markdown-it-anchor                                   | Heading anchors     | Unlicense             |
 | github-slugger                                       | Heading identifiers | ISC                   |
+| acorn, acorn-jsx                                     | MDX statements      | MIT                   |
 | Shiki                                                | Syntax highlighting | MIT                   |
 | ARM, AArch64, Z80, 6502 and AVR grammars             | Assembly syntax     | MIT                   |
 | KaTeX                                                | Math                | MIT                   |

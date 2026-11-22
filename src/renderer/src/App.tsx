@@ -121,7 +121,7 @@ export function App() {
     const id = (loads.current.get(file) ?? 0) + 1
     loads.current.set(file, id)
     try {
-      const doc = await renderMarkdown(await window.mdv.readFile(file))
+      const doc = await renderMarkdown(await window.mdv.readFile(file), /\.mdx$/i.test(file))
       if (loads.current.get(file) === id) dispatch({ type: 'loaded', file, doc })
     } catch {
       // Deleted, unreadable, or not text; a later change to the file tries again.

@@ -6,9 +6,9 @@ import { describe, expect, test, vi } from 'vitest'
 import { domId } from '../../shared/types'
 import { renderMarkdown, sanitize } from './markdown'
 
-async function dom(source: string): Promise<HTMLElement> {
+async function dom(source: string, mdx = false): Promise<HTMLElement> {
   const container = document.createElement('div')
-  container.append(sanitize((await renderMarkdown(source)).html))
+  container.append(sanitize((await renderMarkdown(source, mdx)).html))
   return container
 }
 
@@ -248,5 +248,125 @@ describe('sanitizing', () => {
     expect(el.querySelector('details summary')!.textContent).toBe('More')
     expect(el.querySelector('details strong')!.textContent).toBe('text')
     expect(el.querySelector('kbd')!.textContent).toBe('Ctrl')
+  })
+})
+
+describe('MDX (#4)', () => {
+  const ESM = "import { Chart } from './chart'\nexport const meta = {\n  title: 'x'\n}\n\n# Title\n\nBody.\n"
+  const text = async (source: string): Promise<string> => (await dom(source, true)).textContent!.trim()
+
+  test('claim 5: top-level import and export blocks produce no text', async () => {
+    const el = await dom(ESM, true)
+    expect(el.textContent).not.toMatch(/import|export|Chart|title: 'x'/)
+    expect(el.querySelector('h1')?.textContent).toBe('Title')
+    expect(el.querySelector('p')?.textContent).toBe('Body.')
+  })
+
+  test('claim 5: a heading-like line inside an ESM block stays out of the table of contents', async () => {
+    const { toc } = await renderMarkdown('export const md = `\n# Not a heading\n`\n\n# Only\n', true)
+    expect(toc.map((entry) => entry.text)).toEqual(['Only'])
+  })
+
+  test('claim 5: blank lines inside an export body are part of it', async () => {
+    const source = 'export function Hello() {\n  const a = 1\n\n  return <b>{a}</b>\n}\n\n# T\n'
+    expect(await text(source)).toBe('T')
+  })
+
+  test('claim 5: a blank line inside a template literal is part of the statement', async () => {
+    const { toc } = await renderMarkdown('export const md = `\n# Not\n\n## Also not\n`\n\n# Only\n', true)
+    expect(toc.map((entry) => entry.text)).toEqual(['Only'])
+  })
+
+  test('claim 5: a blank line inside JSX text is part of the statement', async () => {
+    const source = 'export const Note = () => (\n  <aside>\n    Some text\n\n    more text\n  </aside>\n)\n\n# T\n'
+    expect(await text(source)).toBe('T')
+  })
+
+  test('claim 5: a blank line inside a block comment is part of the statement', async () => {
+    expect(await text('export function f() {\n  /* a\n\n  b */\n  return 1\n}\n\n# T\n')).toBe('T')
+  })
+
+  test('claim 5: an ESM block followed by a setext underline is still hidden', async () => {
+    expect(await text('export const a = 1\n---\n\nbody\n')).not.toContain('export')
+  })
+
+  test('claim 5: an ESM block followed by a definition is still hidden', async () => {
+    expect(await text('export const x = 1\n: def\n')).not.toContain('export')
+  })
+
+  test('claim 5: code after the statements that is not a statement is shown', async () => {
+    expect(await text('export const a = 1\nalert(a)\n')).toBe('alert(a)')
+  })
+
+  test.each([
+    ['a regex literal', 'export const re = /\\(/'],
+    ['a block comment', 'export const a = 1 /* see (a */'],
+    ['an apostrophe in JSX text', "export const A = () => { return <p>Don't</p> }"],
+    ['a backtick in JSX text', 'export const C = () => <p>a ` b</p>'],
+    ['unbalanced JSX text', 'export const A = () => <p>Step (1 of 2</p>']
+  ])('claim 5: a statement holding %s is hidden and the rest of the document is not', async (_, statement) => {
+    expect(await text(statement + '\n\n# After\n\nbody\n')).toBe('After\nbody')
+  })
+
+  test('claim 5: a bracket inside a string does not hold the statement open', async () => {
+    expect(await text('export const s = "("\n\n# T\n')).toBe('T')
+  })
+
+  test('claim 5: a bracket inside a line comment does not hold the statement open', async () => {
+    expect(await text('export const a = 1 // (\n\n# T\n')).toBe('T')
+  })
+
+  test('claim 6: an unfinished statement is shown, not hidden with the rest of the document', async () => {
+    expect(await text('export const a = {\n\n# After\n')).toBe('export const a = {\nAfter')
+  })
+
+  test('claim 6: prose that starts with import is shown', async () => {
+    expect(await text('import is a word\n')).toBe('import is a word')
+  })
+
+  test('claim 6: a .md file keeps import and export lines', async () => {
+    expect((await dom(ESM)).textContent).toContain("import { Chart } from './chart'")
+  })
+
+  test('claim 6: a word that only starts like a keyword is kept', async () => {
+    expect(await text('important note\n\nexport: this is prose\n')).toBe('important note\nexport: this is prose')
+  })
+
+  test('claim 6: an ESM-looking line continuing a paragraph is kept', async () => {
+    expect(await text('A paragraph\nexport continues it\n')).toContain('export continues it')
+  })
+
+  test('claim 6: ESM-looking lines inside a quote or a list are kept', async () => {
+    const el = await dom('> import x from "y"\n\n- export const a = 1\n', true)
+    expect(el.querySelector('blockquote')?.textContent).toContain('import x from "y"')
+    expect(el.querySelector('li')?.textContent).toBe('export const a = 1')
+  })
+
+  test('claim 6: an indented ESM-looking line is kept', async () => {
+    expect(await text(' import x from "y"\n')).toContain('import x from "y"')
+  })
+
+  test('claim 7: an import line inside a fenced code block stays in the code block', async () => {
+    const el = await dom('```js\nimport x from "y"\n```\n', true)
+    expect(el.querySelector('pre code')?.textContent).toBe('import x from "y"')
+  })
+
+  test('claim 5: a statement after a byte order mark is hidden', async () => {
+    expect(await text('\uFEFFimport a from "b"\n\n# T\n')).toBe('T')
+  })
+
+  test('guard: a statement spanning many blank-line-separated blocks renders promptly', async () => {
+    const entry = '  { id: 1, name: "an entry of some length", tags: ["a", "b"] },\n\n'
+    const source = 'export const data = [\n' + entry.repeat(1000) + ']\n\n# T\n'
+    const start = performance.now()
+    await dom(source, true)
+    expect(performance.now() - start).toBeLessThan(1000)
+  })
+
+  test('guard: a long block that starts like a statement but is not renders promptly', async () => {
+    const source = "import x from 'y'\n" + 'a();\n'.repeat(2000)
+    const start = performance.now()
+    await dom(source, true)
+    expect(performance.now() - start).toBeLessThan(1000)
   })
 })

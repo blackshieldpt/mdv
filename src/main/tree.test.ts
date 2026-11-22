@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2026 BlackShield LDA
 // SPDX-License-Identifier: Apache-2.0
 
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
-import { join } from 'path'
+import { basename, join } from 'path'
 import { afterAll, beforeAll, expect, test } from 'vitest'
 import type { TreeNode } from '../shared/types'
-import { isMarkdown, readTree } from './tree'
+import { isMarkdown, MARKDOWN_EXT, readTree } from './tree'
 
 let root: string
 
@@ -62,4 +62,25 @@ test('recognises markdown extensions case-insensitively', () => {
   expect(isMarkdown('/x/notes.mdown')).toBe(true)
   expect(isMarkdown('/x/notes.txt')).toBe(false)
   expect(isMarkdown('/x/md')).toBe(false)
+})
+
+test('#4 claim 1: recognises and lists MDX files', async () => {
+  expect(isMarkdown('/x/doc.mdx')).toBe(true)
+  expect(isMarkdown('/x/DOC.MDX')).toBe(true)
+  expect(isMarkdown('/x/doc.mdxx')).toBe(false)
+  const dir = mkdtempSync(join(tmpdir(), 'mdv-mdx-'))
+  try {
+    writeFileSync(join(dir, 'page.mdx'), '')
+    writeFileSync(join(dir, 'page.jsx'), '')
+    expect(names(await readTree(dir))).toEqual([basename(dir), ['page.mdx']])
+  } finally {
+    rmSync(dir, { recursive: true })
+  }
+})
+
+test('#4 claim 4: the packages associate every extension mdv opens', () => {
+  const entries = [...readFileSync('electron-builder.yml', 'utf8').matchAll(/^\s*- ext: (?:\[([^\]]*)\]|(\S+))$/gm)]
+  const ext = entries.flatMap(([, list, one]) => (list ?? one).split(',').map((e) => e.trim()))
+  expect(entries.some(([, , one]) => one === 'mdx')).toBe(true)
+  expect([...ext].sort()).toEqual([...MARKDOWN_EXT].sort())
 })
