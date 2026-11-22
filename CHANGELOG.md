@@ -11,6 +11,11 @@ All notable changes to mdv are recorded here. The format follows
 - Code blocks in ARM, AArch64, Z80, 6502/65C02 and AVR assembly are highlighted (fence names
   `arm`, `armasm`, `arm64`, `aarch64`, `z80`, `6502`, `65c02`, `avr`), and `nasm`, `x86asm`,
   `masm`, `gas` and `s` highlight as x86 assembly.
+- MDX files (`.mdx`) open like other Markdown files: they appear in the file tree, the Open
+  dialog, links between documents and the file associations, and `README.mdx` opens as a
+  folder's start page. They are shown as Markdown with their top-level `import` and `export`
+  statements hidden; MDX is not compiled, so components and `{expressions}` are not rendered (see
+  the README for the limits).
 
 ## [0.2.0] - 2026-10-23
 

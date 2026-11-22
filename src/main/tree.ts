@@ -5,7 +5,7 @@ import { readdir } from 'fs/promises'
 import { basename, extname, join } from 'path'
 import type { TreeNode } from '../shared/types'
 
-export const MARKDOWN_EXT = ['md', 'markdown', 'mdown', 'mkd']
+export const MARKDOWN_EXT = ['md', 'markdown', 'mdown', 'mkd', 'mdx']
 
 export function isMarkdown(path: string): boolean {
   return MARKDOWN_EXT.includes(extname(path).slice(1).toLowerCase())

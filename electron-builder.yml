@@ -17,6 +17,11 @@ fileAssociations:
     name: Markdown
     role: Viewer
     mimeType: text/markdown
+  # A list of its own: the Linux packages turn one entry's extensions into a single glob.
+  - ext: mdx
+    name: MDX
+    role: Viewer
+    mimeType: text/mdx
 linux:
   target: [deb, snap]
   category: Office
