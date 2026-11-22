@@ -176,6 +176,14 @@ describe('assembly highlighting (#5)', () => {
     }
   })
 
+  test('guard: a line built to make the 6502 grammar backtrack renders promptly', async () => {
+    await dom('```6502\nlda #1\n```')
+    const line = 'foo a' + 'A'.repeat(40) + '_'
+    const start = performance.now()
+    await dom('```6502\n' + Array(20).fill(line).join('\n') + '\n```')
+    expect(performance.now() - start).toBeLessThan(1000)
+  })
+
   test('guard: asm still colours x86 labels, mnemonics, registers and comments', async () => {
     expect(await tokenColours('asm', X86, ['start:', 'mov', 'eax', '; c'])).not.toContain('plain')
   })

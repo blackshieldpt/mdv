@@ -30,7 +30,7 @@
     "url": "https://github.com/thinkyhead/AtariCode800",
     "grammar": "6502.tmLanguage.json",
     "licenseFile": "6502.LICENSE",
-    "modified": "mdv gives the semicolon comment rules the scope comment.line.semicolon.asm and lets operands end at a comment."
+    "modified": "mdv gives the semicolon comment rules the scope comment.line.semicolon.asm, lets operands end at a comment, and rewrites the two macro-call patterns in unknown-fallback so they cannot backtrack exponentially."
   },
   {
     "name": "avr-asm-intellisense",
