@@ -12,12 +12,24 @@ extraFiles:
     to: LICENSE.mdv.txt
   - from: out/renderer/THIRD-PARTY-NOTICES.txt
     to: THIRD-PARTY-NOTICES.txt
+# One extension per entry: the Linux packages turn an entry's extensions into a single glob.
 fileAssociations:
-  - ext: [md, markdown, mdown, mkd]
+  - ext: md
     name: Markdown
     role: Viewer
     mimeType: text/markdown
-  # A list of its own: the Linux packages turn one entry's extensions into a single glob.
+  - ext: markdown
+    name: Markdown
+    role: Viewer
+    mimeType: text/markdown
+  - ext: mdown
+    name: Markdown
+    role: Viewer
+    mimeType: text/markdown
+  - ext: mkd
+    name: Markdown
+    role: Viewer
+    mimeType: text/markdown
   - ext: mdx
     name: MDX
     role: Viewer

@@ -17,6 +17,12 @@ All notable changes to mdv are recorded here. The format follows
   statements hidden; MDX is not compiled, so components and `{expressions}` are not rendered (see
   the README for the limits).
 
+### Fixed
+
+- The `.deb` package registers `.md`, `.markdown`, `.mdown` and `.mkd` as `text/markdown` each on
+  its own. It used to register one pattern that matched no file, so `.mdown` files were not
+  associated with mdv. Install the new `.deb` to pick up the fix.
+
 ## [0.2.0] - 2026-10-23
 
 ### Added
