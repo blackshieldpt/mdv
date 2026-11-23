@@ -7,11 +7,6 @@ directories:
   output: dist
 files:
   - out/**/*
-extraFiles:
-  - from: LICENSE
-    to: LICENSE.mdv.txt
-  - from: out/renderer/THIRD-PARTY-NOTICES.txt
-    to: THIRD-PARTY-NOTICES.txt
 # One extension per entry: the Linux packages turn an entry's extensions into a single glob.
 fileAssociations:
   - ext: md
@@ -39,6 +34,12 @@ linux:
   category: Office
   syncDesktopName: true
   icon: build/icons
+  # Not top level: on macOS these would land loose in Contents/ and break the signature.
+  extraFiles:
+    - from: LICENSE
+      to: LICENSE.mdv.txt
+    - from: out/renderer/THIRD-PARTY-NOTICES.txt
+      to: THIRD-PARTY-NOTICES.txt
 # Built by snapcraft in an LXD container.
 snapcraft:
   base: core24
@@ -55,10 +56,23 @@ snapcraft:
           allow-sandbox: true
 win:
   target: nsis
+  extraFiles:
+    - from: LICENSE
+      to: LICENSE.mdv.txt
+    - from: out/renderer/THIRD-PARTY-NOTICES.txt
+      to: THIRD-PARTY-NOTICES.txt
 mac:
   target: dmg
   # electron-builder leaves this file out of macOS bundles.
   extraResources:
     - from: node_modules/electron/dist/LICENSES.chromium.html
       to: LICENSES.chromium.html
+    - from: LICENSE
+      to: LICENSE.mdv.txt
+    - from: out/renderer/THIRD-PARTY-NOTICES.txt
+      to: THIRD-PARTY-NOTICES.txt
   category: public.app-category.productivity
+  # Ad-hoc signed: not notarized, but the bundle's signature is valid. The hardened runtime is only
+  # needed for notarization.
+  identity: '-'
+  hardenedRuntime: false

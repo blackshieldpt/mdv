@@ -52,3 +52,22 @@ test('#8 claim 2: the Linux MIME data has one glob per extension', async () => {
     '*.mkd text/markdown'
   ])
 })
+
+test('the mac config requests ad-hoc signing without the hardened runtime', () => {
+  expect(config.mac?.identity).toBe('-')
+  expect(config.mac?.hardenedRuntime).toBe(false)
+  expect(config.mac?.sign).toBeUndefined()
+  expect(config.mac?.signIgnore).toBeUndefined()
+})
+
+test('no loose files go into the macOS bundle, and the notices still ship everywhere', () => {
+  const notices = [
+    { from: 'LICENSE', to: 'LICENSE.mdv.txt' },
+    { from: 'out/renderer/THIRD-PARTY-NOTICES.txt', to: 'THIRD-PARTY-NOTICES.txt' }
+  ]
+  expect(config.extraFiles ?? []).toEqual([])
+  expect(config.mac?.extraFiles ?? []).toEqual([])
+  expect(config.linux?.extraFiles).toEqual(notices)
+  expect(config.win?.extraFiles).toEqual(notices)
+  expect(config.mac?.extraResources).toEqual(expect.arrayContaining(notices))
+})
