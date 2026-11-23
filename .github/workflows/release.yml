@@ -50,6 +50,16 @@ jobs:
       - run: npm run dist:${{ matrix.target }} -- --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      # An unsigned or broken signature makes Gatekeeper call the app damaged on Apple Silicon.
+      # The copy inside the dmg is the one users get, so it is checked too.
+      - if: matrix.target == 'mac'
+        run: |
+          mkdir -p "$RUNNER_TEMP/dmg"
+          hdiutil attach -nobrowse -readonly -mountpoint "$RUNNER_TEMP/dmg" dist/*.dmg
+          for app in dist/mac*/mdv.app "$RUNNER_TEMP/dmg/mdv.app"; do
+            codesign --verify --deep --strict --verbose=2 "$app"
+            codesign -dv "$app" 2>&1 | grep -x 'Signature=adhoc'
+          done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: mdv-${{ matrix.target }}

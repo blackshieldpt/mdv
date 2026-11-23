@@ -22,6 +22,8 @@ All notable changes to mdv are recorded here. The format follows
 - The `.deb` package registers `.md`, `.markdown`, `.mdown` and `.mkd` as `text/markdown` each on
   its own. It used to register one pattern that matched no file, so `.mdown` files were not
   associated with mdv. Install the new `.deb` to pick up the fix.
+- The macOS app is signed (ad hoc). Before this, macOS on Apple Silicon reported the downloaded
+  app as damaged and refused to open it.
 
 ## [0.2.0] - 2026-10-23
 

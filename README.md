@@ -176,6 +176,9 @@ mdv has not had an independent security audit, and comes without warranty, as th
 
 - **Platforms.** Only the Linux deb has been built and run. The snap and the Windows and macOS
   targets are configured but untested.
+- **macOS.** The app is signed ad hoc, not notarized. The first time, open it, then allow it in
+  System Settings → Privacy & Security → Open Anyway. If macOS still refuses, run
+  `xattr -dr com.apple.quarantine /Applications/mdv.app`. Only Apple Silicon builds are published.
 - **Snap.** The snap reads files in the home folder only.
 - **Printing on paper.** The page numbers in the table of contents assume the default paper size
   (A4, or Letter in the US, Canada and Mexico). They can be wrong if another size is chosen in the
@@ -253,7 +256,8 @@ Electron itself bundles Chromium, Node.js and other software under their own lic
 
 The exact list for a build, with every license text, is generated when the application is built:
 
-- `THIRD-PARTY-NOTICES.txt`, shipped next to the application, covers the components above.
+- `THIRD-PARTY-NOTICES.txt`, shipped next to the application (in `mdv.app/Contents/Resources` on
+  macOS), covers the components above.
 - `LICENSES.chromium.html`, shipped with it too, covers what Electron bundles.
 - Help > About mdv lists the components with their versions and license texts, and opens the
   Electron list.
