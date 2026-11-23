@@ -55,6 +55,8 @@ const initial: State = {
 
 const basename = (path: string): string => path.split(/[\\/]/).pop()!
 
+const FULL_WIDTH_KEY = 'mdv.fullWidth'
+
 function activate(state: State, file: string, hash: string | null = null): State {
   const anchor = hash === null ? null : { hash }
   return { ...state, active: file, tabs: state.tabs.map((tab) => (tab.file === file ? { ...tab, anchor } : tab)) }
@@ -109,6 +111,7 @@ export function App() {
   const [printing, setPrinting] = useState<'paper' | 'pdf' | null>(null)
   /** Zero while the find bar is closed; otherwise bumped each time Find is invoked. */
   const [find, setFind] = useState(0)
+  const [fullWidth, setFullWidth] = useState(() => localStorage.getItem(FULL_WIDTH_KEY) === 'true')
   const { tree, tabs, active } = state
   const tab = tabs.find((candidate) => candidate.file === active)
 
@@ -173,6 +176,11 @@ export function App() {
   }, [files])
 
   useEffect(() => {
+    localStorage.setItem(FULL_WIDTH_KEY, String(fullWidth))
+    window.mdv.setFullWidth(fullWidth)
+  }, [fullWidth])
+
+  useEffect(() => {
     document.title = active ? `${basename(active)} — mdv` : 'mdv'
   }, [active])
 
@@ -208,6 +216,7 @@ export function App() {
           if (shown) setFind((count) => count + 1)
         } else if (action === 'back') dispatch({ type: 'history', step: -1 })
         else if (action === 'forward') dispatch({ type: 'history', step: 1 })
+        else if (action === 'toggle-full-width') setFullWidth((on) => !on)
         else dispatch({ type: 'toggle', pane: action === 'toggle-toc' ? 'toc' : 'sidebar' })
       }),
       window.mdv.onTreeChanged(readTree),
@@ -302,6 +311,7 @@ export function App() {
             onFindClose={() => setFind(0)}
             onHeading={setHeading}
             onLink={followLink}
+            fullWidth={fullWidth}
           />
         ) : tab?.failed ? (
           <div className="welcome">

@@ -237,6 +237,8 @@ function buildMenu(): void {
       submenu: [
         { label: 'Toggle File Tree', accelerator: 'CmdOrCtrl+B', click: send('toggle-sidebar') },
         { label: 'Toggle Table of Contents', accelerator: 'CmdOrCtrl+Shift+B', click: send('toggle-toc') },
+        // The renderer keeps the setting and reports it back through set-full-width.
+        { id: 'full-width', label: 'Full Width', type: 'checkbox', click: send('toggle-full-width') },
         { type: 'separator' },
         { label: 'Back', accelerator: isMac ? 'Cmd+[' : 'Alt+Left', click: send('back') },
         { label: 'Forward', accelerator: isMac ? 'Cmd+]' : 'Alt+Right', click: send('forward') },
@@ -288,6 +290,10 @@ function registerIpc(): void {
     for (const path of pending.splice(0)) await openPath(path)
   })
   handle('pick', (_event, kind: 'file' | 'folder') => pick(kind))
+  handle('set-full-width', (_event, on: boolean) => {
+    const item = Menu.getApplicationMenu()?.getMenuItemById('full-width')
+    if (item) item.checked = on === true
+  })
   handle('open', (_event, path: string) => openPath(path))
 
   handle('read-tree', async (_event, root: string) => {

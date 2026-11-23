@@ -29,6 +29,7 @@ const api: MdvApi = {
   printPages: () => ipcRenderer.invoke('print-pages'),
   about: () => ipcRenderer.invoke('about'),
   openChromiumLicenses: () => ipcRenderer.invoke('open-chromium-licenses'),
+  setFullWidth: (on) => ipcRenderer.invoke('set-full-width', on),
   onOpen: subscribe('open'),
   onMenu: subscribe('menu'),
   onTreeChanged: subscribe('tree-changed'),

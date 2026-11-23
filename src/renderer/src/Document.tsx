@@ -23,12 +23,14 @@ interface Props {
   /** Reports the element id of the heading being read. */
   onHeading(id: string | null): void
   onLink(href: string, newTab: boolean): void
+  /** Whether the column fills the document area instead of keeping its reading width. */
+  fullWidth: boolean
 }
 
 /** Last scroll offset per file; outlives the component so tabs resume where they were. */
 const positions = new Map<string, number>()
 
-export function Document({ file, doc, anchor, find, onFindClose, onHeading, onLink }: Props) {
+export function Document({ file, doc, anchor, find, onFindClose, onHeading, onLink, fullWidth }: Props) {
   const scroller = useRef<HTMLDivElement>(null)
   const content = useRef<HTMLElement>(null)
   const shown = useRef<string | null>(null)
@@ -114,7 +116,7 @@ export function Document({ file, doc, anchor, find, onFindClose, onHeading, onLi
           spy()
         }}
       >
-        <article className="markdown" ref={content} onClick={onClick} onAuxClick={onClick} onContextMenu={onContextMenu} />
+        <article className={fullWidth ? 'markdown full-width' : 'markdown'} ref={content} onClick={onClick} onAuxClick={onClick} onContextMenu={onContextMenu} />
       </div>
     </div>
   )

@@ -8,6 +8,8 @@ All notable changes to mdv are recorded here. The format follows
 
 ### Added
 
+- View > Full Width lets the document fill the space between the side panes instead of keeping its
+  880-pixel reading column. It is off by default, applies to every tab, and is remembered across restarts.
 - Code blocks in ARM, AArch64, Z80, 6502/65C02 and AVR assembly are highlighted (fence names
   `arm`, `armasm`, `arm64`, `aarch64`, `z80`, `6502`, `65c02`, `avr`), and `nasm`, `x86asm`,
   `masm`, `gas` and `s` highlight as x86 assembly.
