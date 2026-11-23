@@ -134,11 +134,13 @@ test.describe('find in files (#20)', () => {
     chmodSync(beta, 0o000)
     try {
       utimesSync(beta, new Date(), new Date())
-      await s.page.waitForTimeout(1000)
       await clickMenu(s, COMMAND)
-      await search(s, 'zebrafish', 'Open documents')
-      await expect(view(s).locator('.find-status')).toHaveText('')
-      expect(await names(s)).toEqual(['alpha.md'])
+      // Searched again until the watch has reported beta.md's failed read, however long that takes.
+      await expect(async () => {
+        await search(s, 'zebrafish', 'Open documents')
+        await expect(view(s).locator('.find-status')).toHaveText('', { timeout: 1000 })
+        expect(await names(s)).toEqual(['alpha.md'])
+      }).toPass()
     } finally {
       chmodSync(beta, 0o644)
     }

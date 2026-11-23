@@ -6,6 +6,11 @@ All notable changes to mdv are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A local image that is missing, cannot be read, or is a folder now fails as not found (404) instead
+  of `net::ERR_UNEXPECTED`, which also printed an error in the main process.
+
 ### Added
 
 - A Refresh button beside the folder's name in the file tree reads the folder again. It brings the
