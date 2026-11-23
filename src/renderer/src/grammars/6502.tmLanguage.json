@@ -452,7 +452,7 @@
     "unknown-fallback": {
       "patterns": [
         {
-          "begin": "([a-zA-Z_][a-zA-Z0-9_]*:?)\\s+([A-Z]+[a-z]+[a-zA-Z0-9]*|[a-z]+[A-Z0-9][a-zA-Z0-9]*)\\b",
+          "begin": "(?<![a-zA-Z0-9_])([a-zA-Z_][a-zA-Z0-9_]*:?)\\s+([A-Z]+[a-z]+[a-zA-Z0-9]*|[a-z]+[A-Z0-9][a-zA-Z0-9]*)\\b",
           "end": "(?=:|$)",
           "beginCaptures": {
             "1": {
@@ -1083,7 +1083,7 @@
           }
         },
         {
-          "match": "(?:[01][01]*)([bB])\\b",
+          "match": "(?<![01])(?:[01][01]*)([bB])\\b",
           "name": "constant.numeric.binary.asm",
           "captures": {
             "1": {
@@ -1105,7 +1105,7 @@
           }
         },
         {
-          "match": "(?:[0-7][0-7]*)([oqOQ])\\b",
+          "match": "(?<![0-7])(?:[0-7][0-7]*)([oqOQ])\\b",
           "name": "constant.numeric.octal.asm",
           "captures": {
             "1": {
@@ -1127,7 +1127,7 @@
           }
         },
         {
-          "match": "(?:[0-9a-fA-F][0-9a-fA-F]*)([hH])\\b",
+          "match": "(?<![0-9a-fA-F])(?:[0-9a-fA-F][0-9a-fA-F]*)([hH])\\b",
           "name": "constant.numeric.hexadecimal.asm",
           "captures": {
             "1": {
@@ -1140,7 +1140,7 @@
     "match-decimal-integer": {
       "patterns": [
         {
-          "match": "(\\&)?(?:\\d\\d*)\\b",
+          "match": "(\\&)?(?<!\\d)(?:\\d\\d*)\\b",
           "name": "constant.numeric.decimal.asm",
           "captures": {
             "1": {
