@@ -22,6 +22,10 @@ All notable changes to mdv are recorded here. The format follows
 - The `.deb` package registers `.md`, `.markdown`, `.mdown` and `.mkd` as `text/markdown` each on
   its own. It used to register one pattern that matched no file, so `.mdown` files were not
   associated with mdv. Install the new `.deb` to pick up the fix.
+- A folder with more than one README opens the one ending in `.md`, then `.markdown`, `.mdown`,
+  `.mkd` and `.mdx`, whatever the case of the name or extension; a README that is not a file, such
+  as a folder, is skipped. It used to open whichever name the system listed first, or no document
+  when that one was a folder.
 - An ARM code block with a very long register list no longer stops the document from showing
   ("cannot be read"), and a very long word in a 6502 code block no longer freezes the window for
   seconds: lines of 2000 characters or more are shown without highlighting. A code block whose
