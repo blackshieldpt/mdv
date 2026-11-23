@@ -410,7 +410,10 @@ function start(): void {
     const base = searchParams.get('base') ?? ''
     const src = decode((searchParams.get('src') ?? '').split(/[?#]/)[0])
     const path = watchedFiles.includes(base) ? resolveImage(base, src) : null
-    return path ? net.fetch(pathToFileURL(path).toString()) : new Response(null, { status: 403 })
+    if (!path) return new Response(null, { status: 403 })
+    // A missing or unreadable file, or a folder, makes the fetch reject, which the page would see as
+    // an unexpected failure rather than a missing image.
+    return net.fetch(pathToFileURL(path).toString()).catch(() => new Response(null, { status: 404 }))
   })
 
   registerIpc()
