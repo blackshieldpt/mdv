@@ -71,9 +71,18 @@ async function openPath(path: string): Promise<void> {
   const info = await stat(path).catch(() => null)
   let target: OpenTarget
   if (info?.isDirectory()) {
-    const readme = (await readdir(path)).map((name) => join(path, name)).find((file) => README.test(basename(file)))
-    const isFile = readme && (await stat(readme).catch(() => null))?.isFile()
-    target = { root: path, file: isFile ? readme : undefined }
+    // A fixed order, so the start page does not depend on the order the system lists names in.
+    const rank = (name: string): number => MARKDOWN_EXT.indexOf(extname(name).slice(1).toLowerCase())
+    const names = (await readdir(path)).filter((name) => README.test(name))
+    names.sort((a, b) => rank(a) - rank(b) || (a < b ? -1 : a > b ? 1 : 0))
+    let readme: string | undefined
+    for (const name of names) {
+      if ((await stat(join(path, name)).catch(() => null))?.isFile()) {
+        readme = join(path, name)
+        break
+      }
+    }
+    target = { root: path, file: readme }
   } else if (info?.isFile()) {
     // With no folder open, the file tree shows the folder the file is in.
     target = { root: hasRoot ? undefined : dirname(path), file: path }
