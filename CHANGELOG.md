@@ -30,6 +30,8 @@ All notable changes to mdv are recorded here. The format follows
   ("cannot be read"), and a very long word in a 6502 code block no longer freezes the window for
   seconds: lines of 2000 characters or more are shown without highlighting. A code block whose
   highlighting fails is shown as plain text while the rest of the document is highlighted as usual.
+- 6502 and Z80 code blocks holding many long words or long numbers no longer take seconds to show:
+  such a word used to cost time growing with the square of its length.
 - The macOS app is signed (ad hoc). Before this, macOS on Apple Silicon reported the downloaded
   app as damaged and refused to open it.
 

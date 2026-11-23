@@ -251,8 +251,9 @@ packages are used unmodified. The syntax grammars and color themes inside Shiki 
 projects, each under its own license, listed at
 <https://github.com/shikijs/textmate-grammars-themes>. The assembly grammars in
 `src/renderer/src/grammars` are copied from their projects at the commits listed in `sources.json`
-there; the 6502 grammar has small changes to how comments are scoped and to two patterns that could
-backtrack exponentially, recorded in `THIRD-PARTY-NOTICES.txt`.
+there; the 6502 grammar has small changes to how comments are scoped and to patterns that could
+backtrack badly on long words, and the Z80 grammar such changes to its numbers, all recorded in
+`THIRD-PARTY-NOTICES.txt`.
 
 Electron itself bundles Chromium, Node.js and other software under their own licenses.
 

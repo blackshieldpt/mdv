@@ -232,7 +232,7 @@
         },
         {
           "name": "constant.numeric.integer.hexadecimal.z80asm",
-          "match": "(\\-?[0-9a-fA-F]+[hH])\\b"
+          "match": "(\\-?(?<![0-9a-fA-F])[0-9a-fA-F]+[hH])\\b"
         },
         {
           "name": "constant.numeric.integer.hexadecimal.z80asm",
@@ -244,11 +244,11 @@
         },
         {
           "name": "constant.numeric.integer.octal.z80asm",
-          "match": "\\-?[0-7]+[oO]\\b"
+          "match": "\\-?(?<![0-7])[0-7]+[oO]\\b"
         },
         {
           "name": "constant.numeric.integer.octal.z80asm",
-          "match": "(\\-?0q?[0-7]+)\\b"
+          "match": "(\\-?(?<![0-7])0q?[0-7]+)\\b"
         },
         {
           "name": "constant.numeric.integer.binary.z80asm",

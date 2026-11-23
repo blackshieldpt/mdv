@@ -235,6 +235,68 @@ describe('pathological lines (#10)', () => {
   })
 })
 
+describe('long words in assembly grammars (#15)', () => {
+  async function renderTime(lang: string, line: string, copies = 100): Promise<number> {
+    await dom('```' + lang + '\nnop\n```')
+    const start = performance.now()
+    await dom('```' + lang + '\n' + Array(copies).fill(line).join('\n') + '\n```')
+    return performance.now() - start
+  }
+
+  test('claim 1: a 6502 fence of 100 lines of 1999 letters renders in under 1 s', async () => {
+    expect(await renderTime('6502', 'aZ'.repeat(999) + 'a')).toBeLessThan(1000)
+  })
+
+  test('claim 2: a 6502 fence of 100 lines of an opcode and a long comment renders in under 1 s', async () => {
+    expect(await renderTime('6502', 'lda #1 ; ' + 'x'.repeat(1990))).toBeLessThan(1000)
+  })
+
+  test('claim 3: a z80 fence of 100 lines of 1999 hex digits renders in under 1 s', async () => {
+    expect(await renderTime('z80', 'aF'.repeat(999) + 'a')).toBeLessThan(1000)
+  })
+
+  test('claim 4: a 6502 fence of 100 lines of an opcode and 1995 hex digits renders in under 1 s', async () => {
+    expect(await renderTime('6502', 'lda ' + 'a'.repeat(1995) + '\nlda ' + 'F'.repeat(1995), 50)).toBeLessThan(1000)
+  })
+
+  test('claim 5: a 6502 fence of 100 lines of an opcode and 1994 ones renders in under 1 s', async () => {
+    expect(await renderTime('6502', 'lda ' + '1'.repeat(1994) + 'x')).toBeLessThan(1000)
+  })
+
+  test('claim 6: a z80 fence of 100 lines of 1998 zeros and a letter renders in under 1 s', async () => {
+    expect(await renderTime('z80', '0'.repeat(1998) + 'g')).toBeLessThan(1000)
+  })
+
+  test('claim 7: a z80 fence of 100 lines of 1999 sevens renders in under 1 s', async () => {
+    expect(await renderTime('z80', '7'.repeat(1999))).toBeLessThan(1000)
+  })
+
+  test('guard: a 6502 label followed by a macro call colours both', async () => {
+    expect(await tokenColours('6502', 'start  MyMacro 1', ['start', 'MyMacro'])).not.toContain('plain')
+  })
+
+  test('guard: a 6502 hexadecimal number with an H suffix is coloured', async () => {
+    expect(await tokenColours('6502', '  lda 0FFH', ['0FFH'])).not.toContain('plain')
+  })
+
+  test('guard: a z80 hexadecimal number with an h suffix is coloured, a minus sign included', async () => {
+    expect(await tokenColours('z80', '  ld a, 0FFh', ['0FFh'])).not.toContain('plain')
+    expect(await tokenColours('z80', '  ld hl, tab-1h', ['-1h'])).not.toContain('plain')
+  })
+
+  test('guard: 6502 binary, octal and &-decimal numbers are coloured', async () => {
+    expect(await tokenColours('6502', '  lda 101b', ['101b'])).not.toContain('plain')
+    expect(await tokenColours('6502', '  lda 17q', ['17q'])).not.toContain('plain')
+    expect(await tokenColours('6502', '  lda &12', ['&12'])).not.toContain('plain')
+  })
+
+  test('guard: z80 octal numbers are coloured, a minus sign included', async () => {
+    expect(await tokenColours('z80', '  ld hl, x7-17o', ['-17o'])).not.toContain('plain')
+    expect(await tokenColours('z80', '  ld hl, x7-0q17', ['-0q17'])).not.toContain('plain')
+    expect(await tokenColours('z80', '  ld a, 0q17', ['0q17'])).not.toContain('plain')
+  })
+})
+
 describe('table of contents', () => {
   test('lists headings with GitHub-style unique slugs', async () => {
     const { toc } = await renderMarkdown("# Title\n\n## What's New?\n\n### Using `mdv` *now*\n\n## What's New?\n")
