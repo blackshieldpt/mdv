@@ -4,6 +4,14 @@ All notable changes to mdv are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- A Refresh button beside the folder's name in the file tree reads the folder again. It brings the
+  tree up to date once when the tree has stopped following the folder, as it does when the opened
+  folder itself is deleted and created again; opening the folder again makes it follow again.
+
 ## [0.3.0] - 2026-11-23
 
 ### Added

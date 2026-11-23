@@ -151,7 +151,8 @@ Right-clicking selected text in the document offers Copy and Copy as Plain Text;
 the text without its formatting.
 
 The file tree and the table of contents are resized by dragging their inner edge, and collapsed or
-expanded with the button at their top corner. Their widths are remembered.
+expanded with the button at their top corner. Their widths are remembered. The file tree follows
+changes to the folder; the Refresh button beside the folder's name reads it again on demand.
 
 ## Security
 
@@ -207,7 +208,10 @@ mdv has not had an independent security audit, and comes without warranty, as th
 - **Find.** Searches the open document only, and skips collapsed sections.
 - **Back and forward.** Step through the documents shown, not through jumps within a document.
 - **File tree.** Hidden files and folders, `node_modules` and symbolic links are not listed; they
-  can still be opened with Open File or from the command line.
+  can still be opened with Open File or from the command line. When the opened folder itself is
+  deleted and created again (replaced by a freshly extracted copy, say), the tree stops following
+  it, and open tabs from it stop reloading. Refresh lists what the folder holds at that moment, once;
+  opening the folder again makes the tree and tabs follow it again.
 
 ## Tests
 

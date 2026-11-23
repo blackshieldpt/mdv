@@ -10,6 +10,11 @@ interface Props {
   onOpen(file: string): void
 }
 
+interface TreeProps extends Props {
+  /** Reads the folder again, for changes the watch missed. */
+  onRefresh(): void
+}
+
 function contains(node: TreeNode, file: string | null): boolean {
   return node.children ? node.children.some((child) => contains(child, file)) : node.path === file
 }
@@ -46,11 +51,16 @@ function Node({ node, current, onOpen }: { node: TreeNode } & Omit<Props, 'tree'
   )
 }
 
-export const FileTree = memo(function FileTree({ tree, current, onOpen }: Props) {
+export const FileTree = memo(function FileTree({ tree, current, onOpen, onRefresh }: TreeProps) {
   return (
     <nav className="tree">
-      <div className="pane-title" title={tree.path}>
-        {tree.name}
+      <div className="tree-head">
+        <div className="pane-title" title={tree.path}>
+          {tree.name}
+        </div>
+        <button className="tree-refresh" aria-label="Refresh file tree" title="Refresh" onClick={onRefresh}>
+          ↻
+        </button>
       </div>
       <ul>
         {tree.children!.map((child) => (

@@ -254,7 +254,7 @@ export function App() {
           open={state.sidebar}
           onToggle={() => dispatch({ type: 'toggle', pane: 'sidebar' })}
         >
-          <FileTree tree={tree} current={active} onOpen={openInNewTab} />
+          <FileTree tree={tree} current={active} onOpen={openInNewTab} onRefresh={readTree} />
         </Pane>
       )}
       <main className="main">

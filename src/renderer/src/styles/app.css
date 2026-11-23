@@ -199,6 +199,32 @@ body {
   white-space: nowrap;
 }
 
+.tree-head {
+  display: flex;
+  align-items: flex-start;
+}
+
+.tree-head .pane-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.tree .tree-refresh {
+  flex: none;
+  width: auto;
+  min-width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  padding: 0 6px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--fg-muted);
+}
+
+.tree .tree-refresh:hover {
+  color: var(--fg);
+}
+
 .tree ul,
 .toc ul {
   margin: 0;
