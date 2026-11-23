@@ -143,7 +143,9 @@ Cmd+[ and Cmd+]. The back and forward buttons of a mouse work too.
 Print and Export as PDF first ask what to add: a table of contents page, page numbers and the file
 name in the page header.
 
-The View menu switches between the light and dark themes (the system's by default) and zooms.
+The View menu switches between the light and dark themes (the system's by default) and zooms. Its
+Full Width item lets the document fill the space between the side panes instead of keeping a
+column of reading width; the choice is remembered.
 
 Right-clicking selected text in the document offers Copy and Copy as Plain Text; the second copies
 the text without its formatting.

@@ -74,6 +74,7 @@ export type MenuAction =
   | 'export-pdf'
   | 'toggle-sidebar'
   | 'toggle-toc'
+  | 'toggle-full-width'
   | 'close-tab'
   | 'next-tab'
   | 'prev-tab'
@@ -100,6 +101,8 @@ export interface MdvApi {
   about(): Promise<AboutInfo>
   /** Opens the license list of Chromium and the other software bundled with Electron. */
   openChromiumLicenses(): Promise<void>
+  /** Shows whether the document column fills the space between the side panes, as the View menu's Full Width item. */
+  setFullWidth(on: boolean): Promise<void>
   onOpen(listener: (target: OpenTarget) => void): () => void
   onMenu(listener: (action: MenuAction) => void): () => void
   onTreeChanged(listener: () => void): () => void
