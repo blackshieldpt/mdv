@@ -196,6 +196,8 @@ mdv has not had an independent security audit, and comes without warranty, as th
 - **Remote images.** Images referenced by `http(s)` URL are fetched when a document is shown, as
   in a browser; their servers see the request.
 - **Diagrams.** A Mermaid diagram cannot set its own theme variables, theme CSS or fonts.
+- **Long code lines.** A line of 2000 characters or more in a code block is shown without
+  highlighting, as is a whole code block whose highlighting fails.
 - **Large folders.** Opening a folder, or a file with no folder open, reads and watches every
   folder under it. That is quick for documentation and ordinary repositories; for a directory
   holding tens of thousands of folders, such as a home folder, it takes seconds and many file

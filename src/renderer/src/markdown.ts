@@ -23,6 +23,8 @@ export interface Rendered {
 }
 
 const THEMES = { light: 'github-light', dark: 'github-dark' }
+/** Lines this long or longer stay plain: some grammars overflow the stack or backtrack on them. */
+const MAX_HIGHLIGHTED_LINE = 2000
 const HEADING_TEXT = ['text', 'code_inline', 'emoji', 'math_inline']
 
 const fenceLang = (info: string): string => info.trim().split(/\s+/)[0].toLowerCase()
@@ -100,12 +102,20 @@ const setup = (async () => {
     const md = new MarkdownIt({
       html: true,
       linkify: true,
-      highlight: (code, lang) =>
-        shiki.codeToHtml(code.replace(/\n$/, ''), {
-          lang: shiki.getLoadedLanguages().includes(lang.toLowerCase()) ? lang.toLowerCase() : 'text',
-          themes: THEMES,
-          defaultColor: false
-        })
+      highlight: (code, lang) => {
+        try {
+          return shiki.codeToHtml(code.replace(/\n$/, ''), {
+            lang: shiki.getLoadedLanguages().includes(lang.toLowerCase()) ? lang.toLowerCase() : 'text',
+            themes: THEMES,
+            defaultColor: false,
+            tokenizeMaxLineLength: MAX_HIGHLIGHTED_LINE
+          })
+        } catch {
+          // An empty result makes markdown-it show the fence as plain text, so one block cannot
+          // fail the whole document.
+          return ''
+        }
+      }
     })
       // A slug that began with the id prefix would end up sharing its element id with another heading.
       .use(anchor, { slugify: (text) => slug(text).replace(new RegExp(`^(${ID_PREFIX})+`), ''), tabIndex: false })

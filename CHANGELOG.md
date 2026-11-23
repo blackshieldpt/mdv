@@ -26,6 +26,10 @@ All notable changes to mdv are recorded here. The format follows
   `.mkd` and `.mdx`, whatever the case of the name or extension; a README that is not a file, such
   as a folder, is skipped. It used to open whichever name the system listed first, or no document
   when that one was a folder.
+- An ARM code block with a very long register list no longer stops the document from showing
+  ("cannot be read"), and a very long word in a 6502 code block no longer freezes the window for
+  seconds: lines of 2000 characters or more are shown without highlighting. A code block whose
+  highlighting fails is shown as plain text while the rest of the document is highlighted as usual.
 - The macOS app is signed (ad hoc). Before this, macOS on Apple Silicon reported the downloaded
   app as damaged and refused to open it.
 
