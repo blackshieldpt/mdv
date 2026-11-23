@@ -22,6 +22,10 @@ All notable changes to mdv are recorded here. The format follows
 - The `.deb` package registers `.md`, `.markdown`, `.mdown` and `.mkd` as `text/markdown` each on
   its own. It used to register one pattern that matched no file, so `.mdown` files were not
   associated with mdv. Install the new `.deb` to pick up the fix.
+- An ARM code block with a very long register list no longer stops the document from showing
+  ("cannot be read"), and a very long word in a 6502 code block no longer freezes the window for
+  seconds: lines of 2000 characters or more are shown without highlighting. A code block whose
+  highlighting fails is shown as plain text while the rest of the document is highlighted as usual.
 - The macOS app is signed (ad hoc). Before this, macOS on Apple Silicon reported the downloaded
   app as damaged and refused to open it.
 

@@ -196,6 +196,45 @@ describe('assembly highlighting (#5)', () => {
   })
 })
 
+describe('pathological lines (#10)', () => {
+  test('claim 1: an arm fence holding an ldm list of 8000 registers renders, its other lines highlighted', async () => {
+    const line = 'ldm r0, {' + 'r1,'.repeat(8000) + 'r1}'
+    const html = await renderMarkdown('```arm\nmov r0, #1\n' + line + '\n```').then(
+      (rendered) => rendered.html,
+      (error: Error) => error
+    )
+    expect(html, 'the document renders').not.toBeInstanceOf(Error)
+    const el = document.createElement('div')
+    el.append(sanitize(html as string))
+    const pre = el.querySelector('pre')!
+    expect(pre.textContent).toContain(line)
+    expect(pre.classList.contains('shiki'), 'the fence is highlighted').toBe(true)
+    expect(await tokenColours('arm', 'mov r0, #1\n' + line, ['mov'])).not.toContain('plain')
+  })
+
+  test.each([
+    ['a bare word', ''],
+    ['a word after an opcode', 'lda ']
+  ])('claim 2: a 6502 fence holding %s of 16,000 letters renders in under 1 s', async (_, prefix) => {
+    await dom('```6502\nlda #1\n```')
+    const line = prefix + 'a'.repeat(16000)
+    const start = performance.now()
+    const el = await dom('```6502\n' + line + '\n```')
+    expect(performance.now() - start).toBeLessThan(1000)
+    expect(el.querySelector('pre')!.textContent).toContain(line)
+  })
+
+  test('guard: a line just under the length limit is still highlighted', async () => {
+    const line = 'mov r0, #1 @ ' + 'x'.repeat(1999 - 'mov r0, #1 @ '.length)
+    expect(line.length).toBe(1999)
+    expect(await tokenColours('arm', line, ['mov'])).not.toContain('plain')
+  })
+
+  test('guard: the other lines of a fence holding an over-long line are still highlighted', async () => {
+    expect(await tokenColours('arm', 'mov r0, #1\n@ ' + 'x'.repeat(3000), ['mov'])).not.toContain('plain')
+  })
+})
+
 describe('table of contents', () => {
   test('lists headings with GitHub-style unique slugs', async () => {
     const { toc } = await renderMarkdown("# Title\n\n## What's New?\n\n### Using `mdv` *now*\n\n## What's New?\n")
