@@ -19,6 +19,8 @@ interface Props {
   anchor: Anchor | null
   /** Zero while the find bar is closed; otherwise changes each time Find is invoked. */
   find: number
+  /** A query for the find bar, as given by Find in Files. */
+  findSeed: { query: string } | null
   onFindClose(): void
   /** Reports the element id of the heading being read. */
   onHeading(id: string | null): void
@@ -30,7 +32,7 @@ interface Props {
 /** Last scroll offset per file; outlives the component so tabs resume where they were. */
 const positions = new Map<string, number>()
 
-export function Document({ file, doc, anchor, find, onFindClose, onHeading, onLink, fullWidth }: Props) {
+export function Document({ file, doc, anchor, find, findSeed, onFindClose, onHeading, onLink, fullWidth }: Props) {
   const scroller = useRef<HTMLDivElement>(null)
   const content = useRef<HTMLElement>(null)
   const shown = useRef<string | null>(null)
@@ -107,7 +109,7 @@ export function Document({ file, doc, anchor, find, onFindClose, onHeading, onLi
 
   return (
     <div className="doc">
-      {find > 0 && <FindBar focus={find} version={version} content={content} scroller={scroller} onClose={onFindClose} />}
+      {find > 0 && <FindBar focus={find} version={version} content={content} scroller={scroller} seed={findSeed} onClose={onFindClose} />}
       <div
         className="doc-scroller"
         ref={scroller}

@@ -11,6 +11,9 @@ All notable changes to mdv are recorded here. The format follows
 - A Refresh button beside the folder's name in the file tree reads the folder again. It brings the
   tree up to date once when the tree has stopped following the folder, as it does when the opened
   folder itself is deleted and created again; opening the folder again makes it follow again.
+- Edit > Find in Files (Ctrl+Shift+F) searches every open document, or every document the file tree
+  lists, and shows the matches by file; clicking one opens the document with the find bar on the
+  query.
 
 ## [0.3.0] - 2026-11-23
 
