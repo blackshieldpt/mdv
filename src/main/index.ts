@@ -229,7 +229,8 @@ function buildMenu(): void {
         { role: 'paste', visible: false },
         { role: 'selectAll' },
         { type: 'separator' },
-        { label: 'Find…', accelerator: 'CmdOrCtrl+F', click: send('find') }
+        { label: 'Find…', accelerator: 'CmdOrCtrl+F', click: send('find') },
+        { label: 'Find in Files…', accelerator: 'CmdOrCtrl+Shift+F', click: send('find-in-files') }
       ]
     },
     {

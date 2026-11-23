@@ -6,6 +6,7 @@ import { domId, type PrintOptions, type TreeNode } from '../../shared/types'
 import { About } from './About'
 import { Document, type Anchor } from './Document'
 import { FileTree } from './FileTree'
+import { FindInFiles } from './FindInFiles'
 import { renderMarkdown, type Rendered } from './markdown'
 import { Pane } from './Pane'
 import { PrintDialog } from './PrintDialog'
@@ -111,6 +112,14 @@ export function App() {
   const [printing, setPrinting] = useState<'paper' | 'pdf' | null>(null)
   /** Zero while the find bar is closed; otherwise bumped each time Find is invoked. */
   const [find, setFind] = useState(0)
+  /** A query Find in Files hands to the find bar; a new object each time. */
+  const [findSeed, setFindSeed] = useState<{ query: string } | null>(null)
+  /** Zero while Find in Files is closed; otherwise bumped each time it is invoked. */
+  const [findInFiles, setFindInFiles] = useState(0)
+  const findInFilesOpen = useRef(false)
+  findInFilesOpen.current = findInFiles > 0
+  /** A Find in Files result waiting for its document to be shown. */
+  const pendingFind = useRef<{ file: string; query: string } | null>(null)
   const [fullWidth, setFullWidth] = useState(() => localStorage.getItem(FULL_WIDTH_KEY) === 'true')
   const { tree, tabs, active } = state
   const tab = tabs.find((candidate) => candidate.file === active)
@@ -189,7 +198,24 @@ export function App() {
   useEffect(() => {
     setPrinting(null)
     if (!shown) setFind(0)
+    const pending = pendingFind.current
+    // The reader went elsewhere before the result's document was shown.
+    if (pending && pending.file !== active) pendingFind.current = null
+    if (shown && pending?.file === active) {
+      pendingFind.current = null
+      setFindSeed({ query: pending.query })
+      setFind((count) => count + 1)
+    }
   }, [active, shown])
+
+  const openResult = (file: string, query: string): void => {
+    pendingFind.current = { file, query }
+    if (file === active && shown) {
+      pendingFind.current = null
+      setFindSeed({ query })
+      setFind((count) => count + 1)
+    } else openInNewTab(file)
+  }
 
   useEffect(() => {
     const unsubscribe = [
@@ -213,10 +239,19 @@ export function App() {
         else if (action === 'prev-tab') dispatch({ type: 'cycle', step: -1 })
         else if (action === 'about') setAbout(true)
         else if (action === 'find') {
+          // However the bar was closed, Find opens it as before, not on the last Find in Files query.
+          setFindSeed(null)
           if (shown) setFind((count) => count + 1)
         } else if (action === 'back') dispatch({ type: 'history', step: -1 })
         else if (action === 'forward') dispatch({ type: 'history', step: 1 })
         else if (action === 'toggle-full-width') setFullWidth((on) => !on)
+        else if (action === 'find-in-files') {
+          if (findInFilesOpen.current && latest.current.sidebar) setFindInFiles(0)
+          else {
+            if (!latest.current.sidebar) dispatch({ type: 'toggle', pane: 'sidebar' })
+            setFindInFiles((count) => count + 1)
+          }
+        }
         else dispatch({ type: 'toggle', pane: action === 'toggle-toc' ? 'toc' : 'sidebar' })
       }),
       window.mdv.onTreeChanged(readTree),
@@ -246,15 +281,19 @@ export function App() {
         for (const file of event.dataTransfer.files) window.mdv.open(file)
       }}
     >
-      {tree && (
+      {(tree || findInFiles > 0) && (
         <Pane
           side="left"
-          name="file tree"
+          name={findInFiles ? 'find in files' : 'file tree'}
           defaultWidth={260}
           open={state.sidebar}
           onToggle={() => dispatch({ type: 'toggle', pane: 'sidebar' })}
         >
-          <FileTree tree={tree} current={active} onOpen={openInNewTab} onRefresh={readTree} />
+          {findInFiles ? (
+            <FindInFiles focus={findInFiles} tree={tree} tabs={tabs} onOpen={openResult} onClose={() => setFindInFiles(0)} />
+          ) : (
+            <FileTree tree={tree!} current={active} onOpen={openInNewTab} onRefresh={readTree} />
+          )}
         </Pane>
       )}
       <main className="main">
@@ -308,6 +347,7 @@ export function App() {
             doc={tab.doc}
             anchor={tab.anchor}
             find={find}
+            findSeed={findSeed}
             onFindClose={() => setFind(0)}
             onHeading={setHeading}
             onLink={followLink}

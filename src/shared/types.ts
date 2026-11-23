@@ -68,6 +68,7 @@ export interface AboutInfo {
 export type MenuAction =
   | 'about'
   | 'find'
+  | 'find-in-files'
   | 'back'
   | 'forward'
   | 'print'

@@ -132,6 +132,8 @@ of link do nothing.
 | Ctrl+W                      | Close tab (the window, when no tab is open) |
 | Ctrl+F                      | Find in the document     |
 | Enter / Shift+Enter / Esc   | In the find bar: next match / previous match / close |
+| Ctrl+Shift+F                | Find in files (open documents or the folder) |
+| Enter / Esc                 | In Find in Files: search / back to the file tree |
 | Alt+Left / Alt+Right        | Back / forward           |
 | Ctrl+Tab / Ctrl+Shift+Tab   | Next / previous tab      |
 | Ctrl+B                      | Toggle file tree         |
@@ -205,7 +207,9 @@ mdv has not had an independent security audit, and comes without warranty, as th
   folder under it. That is quick for documentation and ordinary repositories; for a directory
   holding tens of thousands of folders, such as a home folder, it takes seconds and many file
   watches.
-- **Find.** Searches the open document only, and skips collapsed sections.
+- **Find.** Searches the open document only, and skips collapsed sections. Find in Files searches
+  every open document or every file in the file tree, collapsed sections included, but not
+  diagrams; each folder search reads and renders every file, so it is slow on large folders.
 - **Back and forward.** Step through the documents shown, not through jumps within a document.
 - **File tree.** Hidden files and folders, `node_modules` and symbolic links are not listed; they
   can still be opened with Open File or from the command line. When the opened folder itself is

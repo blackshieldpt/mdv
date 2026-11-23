@@ -258,6 +258,97 @@ body {
   background: var(--bg-hover);
 }
 
+.find-in-files {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+  overflow: auto;
+}
+
+.find-in-files input[type='search'] {
+  padding: 4px 8px;
+  font: inherit;
+  color: var(--fg);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  outline: none;
+}
+
+.find-scope {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  color: var(--fg-muted);
+  border: 0;
+}
+
+.find-scope legend {
+  float: left;
+  padding: 0;
+}
+
+.find-in-files ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.find-in-files .result {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  width: 100%;
+  padding: 4px 10px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+}
+
+.find-in-files .result:hover {
+  background: var(--bg-hover);
+}
+
+.result-name,
+.result-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Up to three lines, so the match in the middle of the snippet stays in view in a narrow pane. */
+.result-snippet {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.result-count {
+  color: var(--fg-muted);
+}
+
+.result-path,
+.result-snippet {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.find-status {
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
 .tree .dir::before {
   display: inline-block;
   width: 14px;

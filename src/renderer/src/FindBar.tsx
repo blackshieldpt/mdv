@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useEffect, useRef, useState, type RefObject } from 'react'
+import { LIMIT, queryPattern } from './search'
 
 interface Props {
   /** Changes whenever Find is invoked, to take the keyboard focus again. */
@@ -10,11 +11,10 @@ interface Props {
   version: number
   content: RefObject<HTMLElement | null>
   scroller: RefObject<HTMLElement | null>
+  /** A query to search for, as given by Find in Files; a new object each time. */
+  seed: { query: string } | null
   onClose(): void
 }
-
-/** Matches kept for one query; a single letter can occur hundreds of thousands of times. */
-const LIMIT = 10000
 
 /** Ranges of the visible occurrences of `query`, including ones spanning several elements. */
 function findRanges(root: HTMLElement, query: string): Range[] {
@@ -34,7 +34,7 @@ function findRanges(root: HTMLElement, query: string): Range[] {
   }
 
   // A space in the query matches any run of whitespace, such as a line break in the source.
-  const pattern = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+'), 'gi')
+  const pattern = queryPattern(query)
   const nodeAt = (offset: number, from: number): number => {
     let index = from
     while (index + 1 < nodes.length && starts[index + 1] <= offset) index++
@@ -54,7 +54,7 @@ function findRanges(root: HTMLElement, query: string): Range[] {
   return ranges
 }
 
-export function FindBar({ focus, version, content, scroller, onClose }: Props) {
+export function FindBar({ focus, version, content, scroller, seed, onClose }: Props) {
   const input = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
   const [ranges, setRanges] = useState<Range[]>([])
@@ -67,6 +67,21 @@ export function FindBar({ focus, version, content, scroller, onClose }: Props) {
     input.current!.focus()
     input.current!.select()
   }, [focus])
+
+  /** A seeded query to select once it is in the box, so typing replaces it as after a re-focus. */
+  const toSelect = useRef<string | null>(null)
+  useEffect(() => {
+    if (!seed) return
+    toSelect.current = seed.query
+    setQuery(seed.query)
+    input.current!.select()
+  }, [seed])
+
+  useEffect(() => {
+    if (toSelect.current !== query) return
+    toSelect.current = null
+    input.current!.select()
+  }, [query])
 
   useEffect(() => {
     const found = query.trim() ? findRanges(content.current!, query) : []
