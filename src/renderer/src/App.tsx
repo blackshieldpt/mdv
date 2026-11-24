@@ -224,7 +224,8 @@ export function App() {
         if (root) {
           wantedRoot.current = root
           await readTree()
-          window.mdv.watchRoot(root)
+          // Only the folder shown now is watched; another opened meanwhile watches itself once read.
+          if (wantedRoot.current === root) window.mdv.watchRoot(root)
         }
       }),
       window.mdv.onMenu((action) => {

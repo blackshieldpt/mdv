@@ -10,6 +10,8 @@ All notable changes to mdv are recorded here. The format follows
 
 - A local image that is missing, cannot be read, or is a folder now fails as not found (404) instead
   of `net::ERR_UNEXPECTED`, which also printed an error in the main process.
+- Opening two folders at once (for example `mdv big small`, or dropping both on the window) no
+  longer leaves the file tree showing one folder while following changes in the other.
 
 ### Added
 
